@@ -2,6 +2,9 @@ package coverage
 
 import (
 	"os"
+	"time"
+	//"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // DO NOT EDIT THIS FUNCTION
@@ -17,4 +20,122 @@ func init() {
 }
 
 // WRITE YOUR CODE BELOW
+func Test_Len(t *testing.T){
+	t.Parallel()
+	exp_len:=5	
+	var p People = make(People, exp_len)
+	if p.Len() != exp_len {
+	t.Errorf("Expected %d, got %d",exp_len,p.Len())
+	}
+}
+
+func Test_Less(t *testing.T) {
+	t.Parallel()
+	result:=true
+	var p People = make(People,2)
+	p[0] = Person{firstName: "Marge", lastName: "Simpson", birthDay: time.Date(1978,3,3,0,0,0,0,time.Local)}
+	p[1]= Person{firstName: "Liza",lastName: "Simpson", birthDay: time.Date(1988,10,25,0,0,0,0,time.Local)}
+	if !p.Less(1,0) {
+		t.Errorf("Expected %v, got %v",result,p.Less(1,0))
+	}
+}
+
+func Test_Swap(t *testing.T){
+	var p People = make(People,3)
+	p[0] = Person{firstName: "Marge", lastName: "Simpson", birthDay: time.Date(1978,3,3,0,0,0,0,time.Local)}
+	p[1]= Person{firstName: "Liza",lastName: "Simpson", birthDay: time.Date(1988,10,25,0,0,0,0,time.Local)}
+	p[2] = Person{firstName: "Marge", lastName: "Simpson", birthDay: time.Date(1978,3,3,0,0,0,0,time.Local)}
+	p.Swap(0,1)
+	if p[1]!=p[2] {
+		t.Error("no swap was done")
+	}
+}
+
+func Test_New(t *testing.T){
+	s:=0
+	test_string:="9 8 7\n6 5 4"
+	test_matrix:=Matrix{rows: 2,cols: 3,data: []int{9,8,7,6,5,4}}
+	real_matrix,err:=New(test_string)
+	if err !=nil {
+		t.Error("Unexpected error messsage")
+	}
+	if real_matrix.rows!=test_matrix.rows {
+		t.Errorf("Expected %d rows, got %d",test_matrix.rows,real_matrix.rows)
+	}
+	if real_matrix.cols!=test_matrix.cols {
+		t.Errorf("Expected %d cols, got %d",test_matrix.cols,real_matrix.cols)
+	}
+	
+	for i:=0;i<test_matrix.cols*test_matrix.rows;i++{
+		if test_matrix.data[i] != real_matrix.data[i] {
+			s=1
+		}		
+	}
+	 if s == 1 {
+		 t.Errorf("Expected %v slice, got %v",test_matrix.data, real_matrix.data)
+		}
+	 
+
+}
+
+func Test_Rows(t *testing.T) {
+	test_matrix:=Matrix{rows: 2,cols: 3,data: []int{9,8,7,6,5,4}}
+	test_slice:=make([][]int,2)
+	test_slice[0] = []int{9,8,7}
+	test_slice[1] = []int{6,5,4}
+	real_slice:=test_matrix.Rows()
+	if len(real_slice)!=len(test_slice) {
+		t.Errorf("expected slice length 2, got %d", len(real_slice))
+	} else {
+		for i:=0; i< len(test_slice); i++{
+			if len(real_slice[i])!=len(test_slice[i]) {
+				t.Errorf("incorrect length of row #%d", i)
+			} else {
+				
+				for j:=0; j< len(test_slice[i]);j++{
+					if test_slice[i][j] != real_slice[i][j] {
+						t.Errorf("incorrect element (%d,%d), expected %d, got %d",i,j, test_slice[i][j],real_slice[i][j])
+					}
+				}
+			}
+		}
+	}
+
+}
+
+func Test_Cols(t *testing.T) {
+	test_matrix:=Matrix{rows: 3,cols: 2,data: []int{9,8,7,6,5,4}}
+	test_slice:=make([][]int,2)
+	test_slice[0] = []int{9,7,5}
+	test_slice[1] = []int{8,6,4}
+	real_slice:=test_matrix.Cols()
+	if len(real_slice)!=len(test_slice) {
+		t.Errorf("expected slice length %d, got %d",len(test_slice) ,len(real_slice))
+	} else {
+		for i:=0; i< len(test_slice); i++{
+			if len(real_slice[i])!=len(test_slice[i]) {
+				t.Errorf("incorrect length of row #%d", i)
+			} else {
+				
+				for j:=0; j< len(test_slice[i]);j++{
+					if test_slice[i][j] != real_slice[i][j] {
+						t.Errorf("incorrect element (%d,%d), expected %d, got %d",i,j, test_slice[i][j],real_slice[i][j])
+					}
+				}
+			}
+		}
+	}
+
+}
+ func Test_Set(t *testing.T){
+	test_matrix:=Matrix{rows: 3,cols: 2,data: []int{9,8,7,6,5,4}}
+	ok:=test_matrix.Set(2,0,1)
+	if !ok {
+		t.Error("unexpected result of function")
+	} else  if test_matrix.data[4]!=1 { 
+		t.Errorf("expected value %d, got %d", 1,test_matrix.data[4])
+	}
+ }
+
+
 
