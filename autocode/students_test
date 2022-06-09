@@ -21,7 +21,6 @@ func init() {
 
 // WRITE YOUR CODE BELOW
 func Test_Len(t *testing.T){
-	t.Parallel()
 	exp_len:=5	
 	var p People = make(People, exp_len)
 	if p.Len() != exp_len {
@@ -30,14 +29,22 @@ func Test_Len(t *testing.T){
 }
 
 func Test_Less(t *testing.T) {
-	t.Parallel()
 	result:=true
-	var p People = make(People,2)
+	var p People = make(People,4)
 	p[0] = Person{firstName: "Marge", lastName: "Simpson", birthDay: time.Date(1978,3,3,0,0,0,0,time.Local)}
 	p[1]= Person{firstName: "Liza",lastName: "Simpson", birthDay: time.Date(1988,10,25,0,0,0,0,time.Local)}
+	p[2]= Person{firstName: "Laila",lastName: "Simpson", birthDay: time.Date(1988,10,25,0,0,0,0,time.Local)}
+	p[3]= Person{firstName: "Laila",lastName: "Raisman", birthDay: time.Date(1988,10,25,0,0,0,0,time.Local)}
 	if !p.Less(1,0) {
 		t.Errorf("Expected %v, got %v",result,p.Less(1,0))
 	}
+	if !p.Less(2,1) {
+		t.Errorf("Expected %v, got %v",result,p.Less(2,1))
+	}
+	if !p.Less(3,2) {
+		t.Errorf("Expected %v, got %v",result,p.Less(3,2))
+	}
+
 }
 
 func Test_Swap(t *testing.T){
@@ -74,7 +81,19 @@ func Test_New(t *testing.T){
 	 if s == 1 {
 		 t.Errorf("Expected %v slice, got %v",test_matrix.data, real_matrix.data)
 		}
-	 
+		
+		test_string1:="9 8 7\n4" 
+		_,err = New(test_string1)
+		if err == nil {
+			t.Error("matrix shouldn't be created but it was created with different row lengths")
+		}
+		test_string2:="9 h 7\n6  4" 
+		_,err = New(test_string2)
+		if err == nil {
+			t.Error("matrix shouldn't be created but it was created with non int element")
+		}
+
+
 
 }
 
@@ -134,6 +153,10 @@ func Test_Cols(t *testing.T) {
 		t.Error("unexpected result of function")
 	} else  if test_matrix.data[4]!=1 { 
 		t.Errorf("expected value %d, got %d", 1,test_matrix.data[4])
+	}
+	ok=test_matrix.Set(3,0,1)
+	if ok {
+		t.Error("unexpected result of function")
 	}
  }
 
